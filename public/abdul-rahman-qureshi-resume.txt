@@ -1,0 +1,30 @@
+ABDUL RAHMAN QURESHI
+Cloud & Deployment Engineer | DevOps | SRE
+
+PROFILE
+I build, automate, deploy and monitor reliable cloud infrastructure and production applications.
+
+EXPERIENCE
+DevOps Intern — J-Spider
+July 2026 — Present
+A focused start in delivery engineering: learning how automation, cloud infrastructure, and operational thinking combine to support reliable software.
+
+TECHNICAL TOOLKIT
+Linux, Bash, SSH, systemd, Linux networking
+Git, GitHub, GitHub Actions
+Docker, Docker Compose, Kubernetes, Helm
+Terraform, Ansible
+AWS, Azure
+Prometheus, Grafana, CloudWatch
+TCP/IP, DNS, HTTP/HTTPS, ports, load balancing
+
+SELECTED PORTFOLIO SYSTEMS
+Production Cloud Deployment
+Kubernetes Production Platform
+Infrastructure as Code
+SRE Monitoring & Incident Response
+
+CONTACT
+Email: abdulrahman.qureshi@example.com
+GitHub: https://github.com
+LinkedIn: https://linkedin.com

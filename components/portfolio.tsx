@@ -49,6 +49,8 @@ const navItems = [
   ["Contact", "contact"],
 ];
 
+const googleSheetsEndpoint = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_ENDPOINT || "https://script.google.com/macros/s/AKfycbxT4pTl_fL4dmhWqgOWBJl1ZRetJTNbRABcEip3hE1qyKuJuLmLvVMIlqBvMN6FyYgL7w/exec";
+
 const technologies = [
   ["Linux", Terminal], ["Git", GitBranch], ["GitHub Actions", Activity], ["Docker", Container],
   ["Kubernetes", Boxes], ["Terraform", Layers3], ["AWS", Cloud], ["Azure", Globe2],
@@ -166,13 +168,7 @@ export default function Portfolio() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const endpoint = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_ENDPOINT;
-
-    if (!endpoint) {
-      setFormStatus("error");
-      return;
-    }
-
+    const endpoint = googleSheetsEndpoint;
     const payload = {
       name: String(formData.get("name") || ""),
       email: String(formData.get("email") || ""),

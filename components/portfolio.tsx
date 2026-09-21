@@ -36,7 +36,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import type { LucideIcon } from "lucide-react";
 
 const navItems = [
@@ -157,7 +157,44 @@ function SectionHeading({ eyebrow, title, copy }: { eyebrow: string; title: stri
 
 export default function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const reduceMotion = useReducedMotion();
+
+  async function handleContactSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setFormStatus("sending");
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const endpoint = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_ENDPOINT;
+
+    if (!endpoint) {
+      setFormStatus("error");
+      return;
+    }
+
+    const payload = {
+      name: String(formData.get("name") || ""),
+      email: String(formData.get("email") || ""),
+      building: String(formData.get("building") || formData.get("subject") || ""),
+      details: String(formData.get("details") || formData.get("message") || ""),
+      website: String(formData.get("website") || ""),
+      submittedAt: new Date().toISOString(),
+    };
+
+    try {
+      await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        mode: "no-cors",
+      });
+      form.reset();
+      setFormStatus("success");
+    } catch {
+      setFormStatus("error");
+    }
+  }
 
   return (
     <main>
@@ -260,7 +297,7 @@ export default function Portfolio() {
 
       <section className="section-pad resume-section" id="resume"><Reveal className="resume-banner"><div><div className="eyebrow"><span className="eyebrow-dot" />The short version</div><h2>Let&apos;s build systems<br />people can rely on.</h2><p>Download a concise resume, or start a conversation about cloud, delivery, and reliability work.</p></div><a className="button button-primary" href="/abdul-cloud-website/abdul-rahman-qureshi-resume.txt" download><Download size={16} /> Download resume</a></Reveal></section>
 
-      <section className="section-pad contact-section" id="contact"><div className="contact-grid"><Reveal><div className="contact-kicker">HAVE A SYSTEM TO SHIP?</div><h2>Let&apos;s talk<br /><span>infrastructure.</span></h2><p>Open to conversations about DevOps, cloud deployment, SRE practice, and early-career opportunities where careful engineering matters.</p><div className="contact-links"><a href="mailto:abdulrahman.qureshi@example.com"><span className="contact-icon">@</span> Email <ArrowUpRight size={15} /></a><a href="https://github.com" target="_blank" rel="noreferrer"><Github size={18} /> GitHub <ArrowUpRight size={15} /></a><a href="https://linkedin.com" target="_blank" rel="noreferrer"><Linkedin size={18} /> LinkedIn <ArrowUpRight size={15} /></a></div></Reveal><Reveal delay={.1} className="contact-form-wrap"><div className="contact-form-heading"><span className="card-kicker">SEND A MESSAGE</span><h3>Start a conversation.</h3><p>Share a little about what you&apos;re building. Responses are collected securely through Google Forms.</p></div><iframe className="contact-form" src="https://docs.google.com/forms/d/e/1FAIpQLSe9Sj6b2FoBFKfIsFdclt-bXdbYHuI_vH__k2cmonqt1-5W9w/viewform?embedded=true" title="Contact form" loading="lazy">Loading contact form...</iframe></Reveal></div></section>
+      <section className="section-pad contact-section" id="contact"><div className="contact-grid"><Reveal><div className="contact-kicker">HAVE A SYSTEM TO SHIP?</div><h2>Let&apos;s talk<br /><span>infrastructure.</span></h2><p>Open to conversations about DevOps, cloud deployment, SRE practice, and early-career opportunities where careful engineering matters.</p><div className="contact-links"><a href="mailto:abdulrahman.qureshi@example.com"><span className="contact-icon">@</span> Email <ArrowUpRight size={15} /></a><a href="https://github.com" target="_blank" rel="noreferrer"><Github size={18} /> GitHub <ArrowUpRight size={15} /></a><a href="https://linkedin.com" target="_blank" rel="noreferrer"><Linkedin size={18} /> LinkedIn <ArrowUpRight size={15} /></a></div></Reveal><Reveal delay={.1} className="contact-form-wrap"><div className="contact-form-heading"><span className="card-kicker">SEND A MESSAGE</span><h3>Start a conversation.</h3><p>Share a little about what you&apos;re building. Your message will be saved to a private Google Sheet.</p></div><form className="contact-form" onSubmit={handleContactSubmit}><input className="contact-input" name="name" type="text" placeholder="Your name" aria-label="Your name" required /><input className="contact-input" name="email" type="email" placeholder="Email address" aria-label="Email address" required /><input className="contact-input" name="subject" type="text" placeholder="What are you building?" aria-label="What are you building?" required /><textarea className="contact-input contact-message" name="message" placeholder="Tell me a little about it..." aria-label="Message" rows={6} required /><input className="contact-honeypot" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" /><button className="button button-primary contact-submit" type="submit" disabled={formStatus === "sending"}>{formStatus === "sending" ? "Sending..." : "Send message"} <ArrowUpRight size={16} /></button>{formStatus === "success" && <p className="form-feedback form-success" role="status">Message sent. I&apos;ll be in touch soon.</p>}{formStatus === "error" && <p className="form-feedback form-error" role="alert">The form is not connected yet. Add the Google Sheets endpoint in <code>.env.local</code>.</p>}</form></Reveal></div></section>
 
       <footer className="footer"><span>© 2026 Abdul Rahman Qureshi</span><span className="footer-center">Built with Next.js <i>•</i> TypeScript <i>•</i> Tailwind CSS</span><span className="footer-status"><span /> systems nominal</span></footer>
     </main>

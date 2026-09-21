@@ -1,3 +1,5 @@
+var SPREADSHEET_ID = "1_-RAqfNzNLoB6i_OD-jqY5IiKwpofJdVvjeQSecjzjA";
+
 function doPost(event) {
   var data = event.parameter || {};
 
@@ -13,9 +15,10 @@ function doPost(event) {
     return jsonResponse({ ok: true });
   }
 
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Responses");
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = spreadsheet.getSheetByName("Responses");
   if (!sheet) {
-    sheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Responses");
+    sheet = spreadsheet.insertSheet("Responses");
     sheet.appendRow(["Submitted at", "Name", "Email", "What are you building?", "Details"]);
   }
 
